@@ -1,0 +1,10 @@
+{
+    "name": "Bob",
+    "age": 30,
+    "hasChildren": false,
+    "titles": [
+        "App Developer",
+        "Full Stack Developer",
+        "PS Engineer"
+    ]
+}
