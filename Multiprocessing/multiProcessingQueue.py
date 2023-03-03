@@ -1,38 +1,25 @@
-from multiprocessing import Process, Value, Array, Lock
+from multiprocessing import Process, Value, Array, Lock, Queue
 import os
 import time
 
-# Race condition: Multiple threads or processes try to modify a common variable at the same time
+
+def squareNumbers(numbers, queue):
+    for i in numbers:
+        queue.put(i*i)
 
 
-# def add100(number, lock):
-#     for i in range(100):
-#         time.sleep(0.01)
-#         with lock:
-#             number.value += 1
-
-def add100(numbers, lock):
-    for i in range(100):
-        time.sleep(0.01)
-        with lock:
-            for j in range(len(numbers)):
-                numbers[j] += 1
+def makeNegative(numbers, queue):
+    for i in numbers:
+        queue.put(-1*i)
 
 
 if __name__ == '__main__':
+    numbers = range(1, 6)
 
-    lock = Lock()
+    q = Queue()
 
-    sharedNumber = Value('i', 0)
-    sharedArray = Array('d', [0.0, 100.0, 70.0])
-
-    # print(f"Number at the start is {sharedNumber.value}")
-    print(f"Array at the start is {sharedArray[:]}")
-
-    # p1 = Process(target=add100, args=(sharedNumber, lock))
-    # p2 = Process(target=add100, args=(sharedNumber, lock))
-    p1 = Process(target=add100, args=(sharedArray, lock))
-    p2 = Process(target=add100, args=(sharedArray, lock))
+    p1 = Process(target=squareNumbers, args=(numbers, q))
+    p2 = Process(target=makeNegative, args=(numbers, q))
 
     p1.start()
     p2.start()
@@ -40,7 +27,7 @@ if __name__ == '__main__':
     p1.join()
     p2.join()
 
-    # print(f"Value at the end is {sharedNumber.value}")
-    print(f"Array at the start is {sharedArray[:]}")
+    while not q.empty():
+        print(q.get())
 
     print('end main')
