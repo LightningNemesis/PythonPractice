@@ -35,7 +35,7 @@ Cons:
 - Need to be careful with race conditions: since common memory space, 2 threads can attempt to modify same variable (race condition)
 
 
-Global Interpreor Lock (GIL):
+## Global Interpreor Lock (GIL):
 - Allows only 1 thread to run at a time in python (in cpython)
 
 Workaround:
